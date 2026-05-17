@@ -18,8 +18,25 @@ async function getServerEntry(): Promise<ServerEntry> {
   return serverEntryPromise;
 }
 
-function brandedErrorResponse(): Response {
-  return new Response(renderErrorPage(), {
+function brandedErrorResponse(error?: unknown): Response {
+  const err = error instanceof Error ? error : new Error(String(error || "Unknown SSR Error"));
+  const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SSR Execution Error</title>
+    <style>
+      body { font-family: monospace; padding: 2rem; background: #fff5f5; color: #c53030; }
+      pre { background: #fff; padding: 1rem; border: 1px solid #feb2b2; border-radius: 4px; overflow-x: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Server-Side Rendering Failed</h1>
+    <p><strong>Error:</strong> ${err.message}</p>
+    <pre>${err.stack || "No stack trace available"}</pre>
+  </body>
+</html>`;
+  return new Response(html, {
     status: 500,
     headers: { "content-type": "text/html; charset=utf-8" },
   });
@@ -62,8 +79,9 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
     return response;
   }
 
-  console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
-  return brandedErrorResponse();
+  const error = consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`);
+  console.error(error);
+  return brandedErrorResponse(error);
 }
 
 export default {
@@ -74,7 +92,7 @@ export default {
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);
-      return brandedErrorResponse();
+      return brandedErrorResponse(error);
     }
   },
 };
