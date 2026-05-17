@@ -112,8 +112,9 @@ export default async function handler(req, res) {
 );
 
 const outFilePath = join(FUNC_DIR, "index.mjs");
+const bannerJs = "import { createRequire } from 'module'; const require = createRequire(import.meta.url);";
 execSync(
-  `npx esbuild "${tempEntryPath}" --bundle --platform=node --format=esm --target=node20 --minify --outfile="${outFilePath}"`,
+  `npx esbuild "${tempEntryPath}" --bundle --platform=node --format=esm --target=node20 --minify --banner:js="${bannerJs}" --outfile="${outFilePath}"`,
   { stdio: "inherit" }
 );
 
