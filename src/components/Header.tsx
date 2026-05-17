@@ -34,14 +34,16 @@ export function Header() {
     <>
       <header className="fixed top-0 inset-x-0 z-40 pt-3 sm:pt-5">
         <div className="container-edit flex items-center justify-between gap-3">
-          {/* Left — Burger circle */}
-          <button
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
-            className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center shrink-0`}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* Left — Burger circle inside a flex-1 aligned-start container */}
+          <div className="flex-1 flex justify-start">
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-label="Menu"
+              className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center shrink-0`}
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
 
           {/* Center — Logo pill on desktop/tablet, circle on mobile */}
           <Link
@@ -55,37 +57,39 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Right — Actions pill */}
-          <div className={`${islandBase} h-12 rounded-full px-1.5 flex items-center gap-0.5 shrink-0`}>
-            <Link to="/catalogue" search={{ focus: true } as any} aria-label="Recherche" className={iconBtn}>
-              <Search className="h-[18px] w-[18px]" />
-            </Link>
-            <Link to={user ? "/favoris" : "/login"} aria-label="Favoris" className={`${iconBtn} relative`}>
-              <Heart className="h-[18px] w-[18px]" />
-              {favCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
-                  {favCount}
-                </span>
-              )}
-            </Link>
-            <button
-              onClick={toggleTheme}
-              aria-label={isDark ? "Thème clair" : "Thème sombre"}
-              className={iconBtn}
-            >
-              {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
-            </button>
-            <Link to="/panier" aria-label="Panier" className={`${iconBtn} relative`}>
-              <ShoppingBag className="h-[18px] w-[18px]" />
-              {count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
-                  {count}
-                </span>
-              )}
-            </Link>
-            <Link to="/login" aria-label="Compte" className={iconBtn}>
-              <User className="h-[18px] w-[18px]" />
-            </Link>
+          {/* Right — Actions pill inside a flex-1 aligned-end container */}
+          <div className="flex-1 flex justify-end">
+            <div className={`${islandBase} h-12 rounded-full px-1.5 flex items-center gap-0.5 shrink-0`}>
+              <Link to="/catalogue" search={{ focus: true } as any} aria-label="Recherche" className={iconBtn}>
+                <Search className="h-[18px] w-[18px]" />
+              </Link>
+              <Link to={user ? "/favoris" : "/login"} aria-label="Favoris" className={`${iconBtn} relative`}>
+                <Heart className="h-[18px] w-[18px]" />
+                {favCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
+                    {favCount}
+                  </span>
+                )}
+              </Link>
+              <button
+                onClick={toggleTheme}
+                aria-label={isDark ? "Thème clair" : "Thème sombre"}
+                className={iconBtn}
+              >
+                {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+              </button>
+              <Link to="/panier" aria-label="Panier" className={`${iconBtn} relative`}>
+                <ShoppingBag className="h-[18px] w-[18px]" />
+                {count > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
+                    {count}
+                  </span>
+                )}
+              </Link>
+              <Link to="/login" aria-label="Compte" className={iconBtn}>
+                <User className="h-[18px] w-[18px]" />
+              </Link>
+            </div>
           </div>
         </div>
       </header>
