@@ -43,13 +43,16 @@ export function Header() {
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
-          {/* Center — Logo circle only */}
+          {/* Center — Logo pill on desktop/tablet, circle on mobile */}
           <Link
             to="/"
             aria-label="Your Fragrance Shop"
-            className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center overflow-hidden shrink-0 p-0`}
+            className={`${islandBase} h-12 w-12 sm:w-auto rounded-full inline-flex items-center justify-center sm:justify-start overflow-hidden shrink-0 p-0 sm:pl-1.5 sm:pr-4 sm:gap-2.5`}
           >
-            <img src={logo} alt="Your Fragrance Shop" className="h-full w-full object-cover rounded-full" />
+            <img src={logo} alt="Your Fragrance Shop Logo" className="h-12 w-12 sm:h-9 sm:w-9 object-cover rounded-full shrink-0" />
+            <span className="hidden sm:inline text-xs font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap">
+              Your Fragrance Shop
+            </span>
           </Link>
 
           {/* Right — Actions pill */}
