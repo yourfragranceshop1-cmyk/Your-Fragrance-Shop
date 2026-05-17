@@ -118,7 +118,7 @@ function AdminPage() {
             <h2 className="font-display text-2xl">{form.id ? "Modifier" : "Nouveau parfum"}</h2>
             <input className="w-full bg-background border border-border px-3 py-2 text-sm" placeholder="Nom" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             <textarea className="w-full bg-background border border-border px-3 py-2 text-sm" placeholder="Description courte" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <input type="number" className="bg-background border border-border px-3 py-2 text-sm" placeholder="Prix" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
               <input type="number" className="bg-background border border-border px-3 py-2 text-sm" placeholder="Stock" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
               <select className="bg-background border border-border px-3 py-2 text-sm" value={form.contenance} onChange={(e) => setForm({ ...form, contenance: e.target.value })}>
@@ -128,9 +128,9 @@ function AdminPage() {
             <select className="w-full bg-background border border-border px-3 py-2 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as ProductCategory })}>
               <option value="femme">Femme</option><option value="homme">Homme</option><option value="unisexe">Unisexe</option>
             </select>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input className="flex-1 bg-background border border-border px-3 py-2 text-sm" placeholder="URL image" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
-              <label className="cursor-pointer inline-flex items-center gap-2 border border-border px-3 py-2 text-xs uppercase tracking-[0.16em] hover:bg-secondary">
+              <label className="cursor-pointer inline-flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs uppercase tracking-[0.16em] hover:bg-secondary shrink-0">
                 <Upload className="h-4 w-4" /> {uploading ? "..." : "Upload"}
                 <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
               </label>
