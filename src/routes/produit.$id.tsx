@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Heart, MessageCircle, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { Heart, MessageCircle, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { StockBadge } from "@/components/StockBadge";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +19,7 @@ function ProductPage() {
   const { id } = Route.useParams();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavorites();
+  const [activeIdx, setActiveIdx] = useState(0);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -33,15 +35,76 @@ function ProductPage() {
   const fav = isFavorite(product.id);
   const waLink = whatsappLink([{ name: product.name, quantity: 1, price: Number(product.price), contenance: product.contenance }]);
 
+  // Build image list: prefer image_urls array, fallback to image_url
+  const images: string[] = (product.image_urls ?? []).length > 0
+    ? product.image_urls
+    : product.image_url ? [product.image_url] : [];
+
+  const prev = () => setActiveIdx((i) => (i - 1 + images.length) % images.length);
+  const next = () => setActiveIdx((i) => (i + 1) % images.length);
+
   return (
     <Layout>
       <section className="container-edit py-12 grid lg:grid-cols-2 gap-12">
-        <div className="relative bg-secondary/60 aspect-square">
-          {product.image_url && (
-            <img src={product.image_url} alt={product.name} width={800} height={800} className="h-full w-full object-cover" />
+        {/* Image gallery */}
+        <div className="flex flex-col gap-3">
+          {/* Main image */}
+          <div className="relative bg-secondary/60 aspect-square overflow-hidden">
+            {images.length > 0 ? (
+              <img
+                src={images[activeIdx]}
+                alt={product.name}
+                width={800}
+                height={800}
+                className="h-full w-full object-cover transition-opacity duration-300"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-muted-foreground text-sm">Aucune image</div>
+            )}
+            <div className="absolute top-4 right-4"><StockBadge stock={product.stock} /></div>
+
+            {/* Prev/Next arrows (only if multiple images) */}
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur border border-border h-9 w-9 flex items-center justify-center hover:bg-background transition"
+                  aria-label="Image précédente"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur border border-border h-9 w-9 flex items-center justify-center hover:bg-background transition"
+                  aria-label="Image suivante"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Thumbnails */}
+          {images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {images.map((url, idx) => (
+                <button
+                  key={url}
+                  type="button"
+                  onClick={() => setActiveIdx(idx)}
+                  className={`flex-shrink-0 w-16 h-16 border-2 overflow-hidden transition-all ${idx === activeIdx ? "border-gold" : "border-border opacity-60 hover:opacity-100"}`}
+                  aria-label={`Photo ${idx + 1}`}
+                >
+                  <img src={url} alt="" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
           )}
-          <div className="absolute top-4 right-4"><StockBadge stock={product.stock} /></div>
         </div>
+
+        {/* Product info */}
         <div className="flex flex-col justify-center">
           <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-4">{product.category}</p>
           <h1 className="font-display text-5xl mb-4">{product.name}</h1>
