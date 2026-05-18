@@ -9,6 +9,66 @@ import type { Product, ProductCategory } from "@/lib/types";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/whatsapp";
 
+// Client-side image compression to reduce payload size and speed up page load
+const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.85): Promise<File> => {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith("image/")) {
+      return resolve(file);
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          return resolve(file);
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              return resolve(file);
+            }
+            const compressedFile = new File([blob], file.name, {
+              type: "image/jpeg",
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = event.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+};
+
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Your Fragrance Shop" }] }),
   component: AdminPage,
@@ -66,7 +126,9 @@ function AdminPage() {
     if (!files.length) return;
     setUploading(true);
     try {
-      const urls = await Promise.all(files.map(uploadFile));
+      // Compress all images before uploading to optimize speeds (from 5-10MB to ~150KB per image)
+      const compressedFiles = await Promise.all(files.map((file) => compressImage(file)));
+      const urls = await Promise.all(compressedFiles.map(uploadFile));
       setForm((f) => {
         const merged = [...f.image_urls, ...urls];
         // First image becomes the primary image_url
@@ -245,7 +307,7 @@ function AdminPage() {
                       <button
                         type="button"
                         onClick={() => removeImage(idx)}
-                        className="absolute -top-1.5 -right-1.5 bg-destructive text-white rounded-full h-5 w-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute -top-1.5 -right-1.5 bg-destructive text-white rounded-full h-5 w-5 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                         aria-label="Supprimer"
                       >
                         <X className="h-3 w-3" />

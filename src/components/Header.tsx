@@ -33,8 +33,66 @@ export function Header() {
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-40 pt-3 sm:pt-5">
-        <div className="container-edit flex items-center justify-between gap-3">
-          {/* Left — Burger circle inside a flex-1 aligned-start container */}
+        {/* Mobile Navigation (Logo extreme left, actions pill + burger extreme right) */}
+        <div className="container-edit flex sm:hidden items-center justify-between gap-2">
+          {/* Extreme Left — Logo circle */}
+          <Link
+            to="/"
+            aria-label="Your Fragrance Shop"
+            className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center overflow-hidden shrink-0 p-0`}
+          >
+            <img src={logo} alt="Your Fragrance Shop Logo" className="h-12 w-12 object-cover rounded-full shrink-0" />
+          </Link>
+
+          {/* Extreme Right — Actions Pill followed by Burger Circle */}
+          <div className="flex items-center gap-1.5">
+            {/* Actions Pill */}
+            <div className={`${islandBase} h-12 rounded-full px-1.5 flex items-center gap-0 shrink-0`}>
+              <Link to="/catalogue" search={{ focus: true } as any} aria-label="Recherche" className={iconBtn}>
+                <Search className="h-[18px] w-[18px]" />
+              </Link>
+              <Link to={user ? "/favoris" : "/login"} aria-label="Favoris" className={`${iconBtn} relative`}>
+                <Heart className="h-[18px] w-[18px]" />
+                {favCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
+                    {favCount}
+                  </span>
+                )}
+              </Link>
+              <button
+                onClick={toggleTheme}
+                aria-label={isDark ? "Thème clair" : "Thème sombre"}
+                className={iconBtn}
+              >
+                {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+              </button>
+              <Link to="/panier" aria-label="Panier" className={`${iconBtn} relative`}>
+                <ShoppingBag className="h-[18px] w-[18px]" />
+                {count > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
+                    {count}
+                  </span>
+                )}
+              </Link>
+              <Link to="/login" aria-label="Compte" className={iconBtn}>
+                <User className="h-[18px] w-[18px]" />
+              </Link>
+            </div>
+
+            {/* Burger Circle */}
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-label="Menu"
+              className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center shrink-0`}
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop & Tablet Navigation (Original layout retained) */}
+        <div className="container-edit hidden sm:flex items-center justify-between gap-3">
+          {/* Left — Burger circle */}
           <div className="flex-1 flex justify-start">
             <button
               onClick={() => setOpen((v) => !v)}
@@ -45,19 +103,19 @@ export function Header() {
             </button>
           </div>
 
-          {/* Center — Logo pill on desktop/tablet, circle on mobile */}
+          {/* Center — Logo pill with brand text */}
           <Link
             to="/"
             aria-label="Your Fragrance Shop"
-            className={`${islandBase} h-12 w-12 sm:w-auto rounded-full inline-flex items-center justify-center sm:justify-start overflow-hidden shrink-0 p-0 sm:pl-1.5 sm:pr-4 sm:gap-2.5`}
+            className={`${islandBase} h-12 sm:w-auto rounded-full inline-flex items-center sm:justify-start overflow-hidden shrink-0 pl-1.5 pr-4 gap-2.5`}
           >
-            <img src={logo} alt="Your Fragrance Shop Logo" className="h-12 w-12 sm:h-9 sm:w-9 object-cover rounded-full shrink-0" />
-            <span className="hidden sm:inline text-xs font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap">
+            <img src={logo} alt="Your Fragrance Shop Logo" className="h-9 w-9 object-cover rounded-full shrink-0" />
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap">
               Your Fragrance Shop
             </span>
           </Link>
 
-          {/* Right — Actions pill inside a flex-1 aligned-end container */}
+          {/* Right — Actions pill */}
           <div className="flex-1 flex justify-end">
             <div className={`${islandBase} h-12 rounded-full px-1.5 flex items-center gap-0.5 shrink-0`}>
               <Link to="/catalogue" search={{ focus: true } as any} aria-label="Recherche" className={iconBtn}>
