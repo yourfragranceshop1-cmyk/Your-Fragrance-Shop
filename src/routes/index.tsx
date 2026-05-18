@@ -40,6 +40,14 @@ function HomePage() {
       return (data ?? []) as Product[];
     },
   });
+  const { data: fallbackProducts = [] } = useQuery({
+    queryKey: ["fallback-products"],
+    queryFn: async () => {
+      const { data } = await supabase.from("products").select("*").limit(8);
+      return (data ?? []) as Product[];
+    },
+    enabled: bestsellers.length === 0 && popular.length === 0,
+  });
 
   return (
     <Layout>
@@ -50,7 +58,7 @@ function HomePage() {
         <section className="container-edit py-12">
           <div className="text-center mb-12">
             <h2 className="font-display text-4xl md:text-5xl">Les Bestsellers</h2>
-            <Link to="/catalogue" search={{ bestseller: true }} className="mt-4 link-underline inline-flex">
+            <Link to="/catalogue" search={{ bestseller: true } as any} className="mt-4 link-underline inline-flex">
               Voir tous <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
@@ -68,6 +76,29 @@ function HomePage() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {popular.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </section>
+      )}
+
+      {/* FALLBACK COLLECTION (If bestsellers & popular are both empty) */}
+      {bestsellers.length === 0 && popular.length === 0 && fallbackProducts.length > 0 && (
+        <section className="container-edit py-16">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-4xl md:text-5xl">Notre Collection</h2>
+            <p className="text-muted-foreground mt-2 max-w-sm mx-auto text-[13px] tracking-wide leading-relaxed">
+              Découvrez notre sélection exclusive de parfums d'exception pour tous les budgets.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {fallbackProducts.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+          <div className="text-center mt-12">
+            <Link
+              to="/catalogue"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.2em] hover:opacity-90 transition-opacity"
+            >
+              Explorer le catalogue <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </section>
       )}

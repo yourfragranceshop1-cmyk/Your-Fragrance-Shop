@@ -6,15 +6,21 @@ import { Layout } from "@/components/Layout";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import type { Product } from "@/lib/types";
-import { Search } from "lucide-react";
+import { Search, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const searchSchema = z.object({
   q: z.string().optional(),
   category: z.enum(["homme", "femme", "unisexe"]).optional(),
   contenance: z.coerce.number().optional(),
   bestseller: z.coerce.boolean().optional(),
-  inStock: z.coerce.boolean().optional(),
-  sort: z.enum(["new", "price_asc", "price_desc"]).optional(),
+  sort: z.enum(["price_asc", "price_desc"]).optional(),
+  type: z.enum(["bestseller", "populaire", "normal"]).optional(),
   focus: z.coerce.boolean().optional(),
 });
 
@@ -23,7 +29,7 @@ export const Route = createFileRoute("/catalogue")({
   head: () => ({
     meta: [
       { title: "Catalogue — Your Fragrance Shop" },
-      { name: "description", content: "Tous nos parfums : femme, homme, unisexe. Filtrez par contenance, prix et disponibilité." },
+      { name: "description", content: "Tous nos parfums : femme, homme, unisexe. Filtrez par contenance, prix et type." },
     ],
   }),
   component: CataloguePage,
@@ -33,6 +39,13 @@ function CataloguePage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/catalogue" });
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Backward compatibility: Convert bestseller query param to type="bestseller"
+  useEffect(() => {
+    if (search.bestseller) {
+      update({ type: "bestseller", bestseller: undefined });
+    }
+  }, [search.bestseller]);
 
   useEffect(() => {
     if (search.focus) {
@@ -53,14 +66,28 @@ function CataloguePage() {
     let list = [...products];
     if (search.category) list = list.filter((p) => p.category === search.category);
     if (search.contenance) list = list.filter((p) => p.contenance === search.contenance);
-    if (search.bestseller) list = list.filter((p) => p.is_bestseller);
-    if (search.inStock) list = list.filter((p) => p.stock > 0);
+    
+    if (search.type) {
+      if (search.type === "bestseller") {
+        list = list.filter((p) => p.is_bestseller);
+      } else if (search.type === "populaire") {
+        list = list.filter((p) => p.is_popular);
+      } else if (search.type === "normal") {
+        list = list.filter((p) => !p.is_bestseller && !p.is_popular);
+      }
+    }
+
     if (search.q) {
       const q = search.q.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q) || (p.description ?? "").toLowerCase().includes(q));
     }
-    if (search.sort === "price_asc") list.sort((a, b) => Number(a.price) - Number(b.price));
-    if (search.sort === "price_desc") list.sort((a, b) => Number(b.price) - Number(a.price));
+
+    if (search.sort === "price_asc") {
+      list.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (search.sort === "price_desc") {
+      list.sort((a, b) => Number(b.price) - Number(a.price));
+    }
+    
     return list;
   }, [products, search]);
 
@@ -89,43 +116,96 @@ function CataloguePage() {
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 justify-center items-center mb-12 text-xs uppercase tracking-[0.16em]">
-          <select
-            value={search.category ?? ""}
-            onChange={(e) => update({ category: (e.target.value || undefined) as typeof search.category })}
-            className="px-4 py-2 border border-border bg-background uppercase tracking-[0.16em] text-xs"
-          >
-            <option value="">Catégorie</option>
-            <option value="femme">Femme</option>
-            <option value="homme">Homme</option>
-            <option value="unisexe">Unisexe</option>
-          </select>
-          <select
-            value={search.contenance ?? ""}
-            onChange={(e) => update({ contenance: e.target.value ? Number(e.target.value) : undefined })}
-            className="px-4 py-2 border border-border bg-background uppercase tracking-[0.16em] text-xs"
-          >
-            <option value="">Contenance</option>
-            <option value="30">30 ml</option>
-            <option value="50">50 ml</option>
-            <option value="100">100 ml</option>
-          </select>
-          <select
-            value={search.sort ?? "new"}
-            onChange={(e) => update({ sort: e.target.value as "new" | "price_asc" | "price_desc" })}
-            className="px-4 py-2 border border-border bg-background uppercase tracking-[0.16em] text-xs"
-          >
-            <option value="new">Nouveautés</option>
-            <option value="price_asc">Prix ↑</option>
-            <option value="price_desc">Prix ↓</option>
-          </select>
-          <button
-            onClick={() => update({ bestseller: search.bestseller ? undefined : true })}
-            className={`px-4 py-2 border transition ${search.bestseller ? "bg-gold text-gold-foreground border-gold" : "border-border hover:border-foreground"}`}
-          >Bestseller</button>
-          <button
-            onClick={() => update({ inStock: search.inStock ? undefined : true })}
-            className={`px-4 py-2 border transition ${search.inStock ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-foreground"}`}
-          >En stock</button>
+          
+          {/* CATEGORY FILTER */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="px-4 py-2 border border-border bg-card hover:border-foreground/30 transition-colors uppercase tracking-[0.16em] text-[10px] sm:text-xs flex items-center gap-1.5 cursor-pointer rounded-none outline-none select-none">
+                {search.category ? `Catégorie : ${search.category}` : "Catégorie"}
+                <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
+              <DropdownMenuItem onClick={() => update({ category: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Tous
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ category: "homme" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Homme
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ category: "femme" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Femme
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ category: "unisexe" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Unisexe
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* CONTENANCE FILTER */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="px-4 py-2 border border-border bg-card hover:border-foreground/30 transition-colors uppercase tracking-[0.16em] text-[10px] sm:text-xs flex items-center gap-1.5 cursor-pointer rounded-none outline-none select-none">
+                {search.contenance ? `Contenance : ${search.contenance} ml` : "Contenance"}
+                <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
+              <DropdownMenuItem onClick={() => update({ contenance: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Toutes
+              </DropdownMenuItem>
+              {[5, 25, 30, 35, 50, 75, 100].map((c) => (
+                <DropdownMenuItem key={c} onClick={() => update({ contenance: c })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                  {c} ml
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* PRICE SORT FILTER */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="px-4 py-2 border border-border bg-card hover:border-foreground/30 transition-colors uppercase tracking-[0.16em] text-[10px] sm:text-xs flex items-center gap-1.5 cursor-pointer rounded-none outline-none select-none">
+                {search.sort === "price_asc" ? "Prix croissant" : search.sort === "price_desc" ? "Prix décroissant" : "Prix"}
+                <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
+              <DropdownMenuItem onClick={() => update({ sort: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Par défaut
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ sort: "price_asc" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Prix croissant
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ sort: "price_desc" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Prix décroissant
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* TYPE FILTER */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="px-4 py-2 border border-border bg-card hover:border-foreground/30 transition-colors uppercase tracking-[0.16em] text-[10px] sm:text-xs flex items-center gap-1.5 cursor-pointer rounded-none outline-none select-none">
+                {search.type ? `Type : ${search.type}` : "Type"}
+                <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
+              <DropdownMenuItem onClick={() => update({ type: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Tous
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ type: "bestseller" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Bestseller
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ type: "populaire" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Populaire
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => update({ type: "normal" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                Normal
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         </div>
 
         {isLoading ? (
