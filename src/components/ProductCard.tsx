@@ -18,7 +18,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="relative overflow-hidden bg-secondary/60 aspect-[4/5]">
           {product.image_url ? (
             <img
-              src={product.image_url}
+              src={product.image_url.split(",")[0]}
               alt={product.name}
               loading="lazy"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"

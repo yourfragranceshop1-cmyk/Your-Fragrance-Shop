@@ -35,10 +35,10 @@ function ProductPage() {
   const fav = isFavorite(product.id);
   const waLink = whatsappLink([{ name: product.name, quantity: 1, price: Number(product.price), contenance: product.contenance }]);
 
-  // Build image list: prefer image_urls array, fallback to image_url
-  const images: string[] = (product.image_urls ?? []).length > 0
-    ? product.image_urls
-    : product.image_url ? [product.image_url] : [];
+  // Build image list: split image_url by comma to get all URLs
+  const images: string[] = product.image_url
+    ? product.image_url.split(",").filter(Boolean)
+    : [];
 
   const prev = () => setActiveIdx((i) => (i - 1 + images.length) % images.length);
   const next = () => setActiveIdx((i) => (i + 1) % images.length);

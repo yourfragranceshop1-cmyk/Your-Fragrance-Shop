@@ -83,7 +83,6 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
-          image_urls: string[]
           is_bestseller: boolean
           is_popular: boolean
           name: string
@@ -98,7 +97,6 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
-          image_urls?: string[]
           is_bestseller?: boolean
           is_popular?: boolean
           name: string
@@ -113,7 +111,6 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
-          image_urls?: string[]
           is_bestseller?: boolean
           is_popular?: boolean
           name?: string

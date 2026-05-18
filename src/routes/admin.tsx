@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Edit2, Plus, Trash2, Upload, X, ImagePlus } from "lucide-react";
+import { Edit2, Plus, Trash2, X, ImagePlus } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -70,7 +70,7 @@ function AdminPage() {
       setForm((f) => {
         const merged = [...f.image_urls, ...urls];
         // First image becomes the primary image_url
-        return { ...f, image_urls: merged, image_url: merged[0] ?? f.image_url };
+        return { ...f, image_urls: merged, image_url: merged.join(",") };
       });
       toast.success(`${urls.length} photo(s) téléchargée(s)`);
     } catch (err) {
@@ -85,19 +85,23 @@ function AdminPage() {
   const removeImage = (idx: number) => {
     setForm((f) => {
       const next = f.image_urls.filter((_, i) => i !== idx);
-      return { ...f, image_urls: next, image_url: next[0] ?? "" };
+      return { ...f, image_urls: next, image_url: next.join(",") };
     });
   };
 
   const setPrimary = (url: string) => {
     setForm((f) => {
       const reordered = [url, ...f.image_urls.filter((u) => u !== url)];
-      return { ...f, image_urls: reordered, image_url: url };
+      return { ...f, image_urls: reordered, image_url: reordered.join(",") };
     });
   };
 
   const save = async () => {
     if (!form.name || !form.price) { toast.error("Nom et prix requis"); return; }
+    
+    // Save all image URLs in the single image_url column separated by commas
+    const finalImageUrl = form.image_urls.length > 0 ? form.image_urls.join(",") : (form.image_url || null);
+
     const payload = {
       name: form.name,
       description: form.description || null,
@@ -105,14 +109,15 @@ function AdminPage() {
       stock: Number(form.stock),
       category: form.category,
       contenance: Number(form.contenance) || 0,
-      image_url: (form.image_urls[0] ?? form.image_url) || null,
-      image_urls: form.image_urls,
+      image_url: finalImageUrl,
       is_bestseller: form.is_bestseller,
       is_popular: form.is_popular,
     };
+
     const { error } = form.id
       ? await supabase.from("products").update(payload).eq("id", form.id)
       : await supabase.from("products").insert(payload);
+      
     if (error) { toast.error(error.message); return; }
     toast.success(form.id ? "Mis à jour" : "Créé");
     setForm(empty);
@@ -122,12 +127,24 @@ function AdminPage() {
     qc.invalidateQueries({ queryKey: ["popular"] });
   };
 
-  const edit = (p: Product) => setForm({
-    id: p.id, name: p.name, description: p.description ?? "", price: String(p.price),
-    stock: String(p.stock), category: p.category, contenance: String(p.contenance),
-    image_url: p.image_url ?? "", image_urls: p.image_urls ?? (p.image_url ? [p.image_url] : []),
-    is_bestseller: p.is_bestseller, is_popular: p.is_popular,
-  });
+  const edit = (p: Product) => {
+    // Split image_url by comma to retrieve all individual image URLs
+    const urls = p.image_url ? p.image_url.split(",").filter(Boolean) : [];
+    
+    setForm({
+      id: p.id,
+      name: p.name,
+      description: p.description ?? "",
+      price: String(p.price),
+      stock: String(p.stock),
+      category: p.category,
+      contenance: String(p.contenance),
+      image_url: p.image_url ?? "",
+      image_urls: urls,
+      is_bestseller: p.is_bestseller,
+      is_popular: p.is_popular,
+    });
+  };
 
   const del = async (id: string) => {
     if (!confirm("Supprimer ce produit ?")) return;
@@ -276,33 +293,38 @@ function AdminPage() {
           {/* Product list */}
           <div className="space-y-3">
             <h2 className="font-display text-2xl mb-2">Produits ({products.length})</h2>
-            {products.map((p) => (
-              <div key={p.id} className="flex gap-3 bg-card border border-border p-3">
-                {/* Thumbnail grid or single image */}
-                <div className="w-16 h-16 bg-secondary flex-shrink-0 relative overflow-hidden">
-                  {p.image_url && <img src={p.image_url} alt={p.name} className="h-full w-full object-cover" />}
-                  {(p.image_urls ?? []).length > 1 && (
-                    <span className="absolute bottom-0 right-0 bg-background/80 text-[9px] px-1">
-                      +{(p.image_urls ?? []).length - 1}
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-lg truncate">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatPrice(Number(p.price))} · stock {p.stock} · {p.contenance} ml · {p.category}
-                  </p>
-                  <div className="flex gap-1 mt-1 text-[10px] uppercase tracking-[0.16em]">
-                    {p.is_bestseller && <span className="text-gold">Best</span>}
-                    {p.is_popular && <span className="text-muted-foreground">Pop</span>}
+            {products.map((p) => {
+              const urls = p.image_url ? p.image_url.split(",").filter(Boolean) : [];
+              const mainUrl = urls[0] || "";
+
+              return (
+                <div key={p.id} className="flex gap-3 bg-card border border-border p-3">
+                  {/* Thumbnail grid or single image */}
+                  <div className="w-16 h-16 bg-secondary flex-shrink-0 relative overflow-hidden">
+                    {mainUrl && <img src={mainUrl} alt={p.name} className="h-full w-full object-cover" />}
+                    {urls.length > 1 && (
+                      <span className="absolute bottom-0 right-0 bg-background/80 text-[9px] px-1">
+                        +{urls.length - 1}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-display text-lg truncate">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatPrice(Number(p.price))} · stock {p.stock} · {p.contenance} ml · {p.category}
+                    </p>
+                    <div className="flex gap-1 mt-1 text-[10px] uppercase tracking-[0.16em]">
+                      {p.is_bestseller && <span className="text-gold">Best</span>}
+                      {p.is_popular && <span className="text-muted-foreground">Pop</span>}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button onClick={() => edit(p)} className="p-2 hover:bg-secondary"><Edit2 className="h-4 w-4" /></button>
+                    <button onClick={() => del(p.id)} className="p-2 text-destructive hover:bg-destructive/10"><Trash2 className="h-4 w-4" /></button>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <button onClick={() => edit(p)} className="p-2 hover:bg-secondary"><Edit2 className="h-4 w-4" /></button>
-                  <button onClick={() => del(p.id)} className="p-2 text-destructive hover:bg-destructive/10"><Trash2 className="h-4 w-4" /></button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

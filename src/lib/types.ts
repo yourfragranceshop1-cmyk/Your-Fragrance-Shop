@@ -7,7 +7,6 @@ export interface Product {
   price: number;
   stock: number;
   image_url: string | null;
-  image_urls: string[];
   category: ProductCategory;
   contenance: number;
   is_bestseller: boolean;
