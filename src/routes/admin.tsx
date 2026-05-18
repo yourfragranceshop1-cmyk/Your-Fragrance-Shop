@@ -218,12 +218,12 @@ function AdminPage() {
 
   return (
     <Layout>
-      <section className="container-edit py-12">
-        <h1 className="font-display text-5xl mb-12">Administration</h1>
+      <section className="container-edit py-12 min-w-0">
+        <h1 className="font-display text-4xl sm:text-5xl mb-8 sm:mb-12">Administration</h1>
 
-        <div className="grid lg:grid-cols-2 gap-10">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-10 min-w-0">
           {/* Form */}
-          <div className="bg-card border border-border p-6 h-fit space-y-4">
+          <div className="bg-card border border-border p-4 sm:p-6 h-fit space-y-4 min-w-0">
             <h2 className="font-display text-2xl">{form.id ? "Modifier" : "Nouveau parfum"}</h2>
 
             <input
@@ -353,7 +353,7 @@ function AdminPage() {
           </div>
 
           {/* Product list */}
-          <div className="space-y-3">
+          <div className="space-y-3 min-w-0">
             <h2 className="font-display text-2xl mb-2">Produits ({products.length})</h2>
             {products.map((p) => {
               const urls = p.image_url ? p.image_url.split(",").filter(Boolean) : [];

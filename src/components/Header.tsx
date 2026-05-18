@@ -229,7 +229,9 @@ export function Breadcrumbs() {
           <li key={c.to} className="flex items-center gap-1.5">
             <span aria-hidden className="text-muted-foreground/50">/</span>
             {c.isLast ? (
-              <span className="text-foreground">{c.label}</span>
+              <span className="text-foreground break-all max-w-[150px] sm:max-w-none truncate sm:whitespace-normal inline-block align-bottom" title={c.label}>
+                {c.label}
+              </span>
             ) : (
               <Link to={c.to as any} className="hover:text-foreground transition-colors">
                 {c.label}
