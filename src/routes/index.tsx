@@ -226,7 +226,6 @@ function ParallaxHero() {
           height={1080}
           loading="eager"
           fetchPriority="high"
-          decoding="async"
           className="h-full w-full object-cover"
         />
         {/* Tinted overlay so text stays legible in light & dark themes */}

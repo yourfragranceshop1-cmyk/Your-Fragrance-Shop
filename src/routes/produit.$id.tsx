@@ -56,8 +56,6 @@ function ProductPage() {
                 alt={product.name}
                 width={800}
                 height={800}
-                loading="eager"
-                decoding="async"
                 className="h-full w-full object-cover transition-opacity duration-300"
               />
             ) : (
@@ -99,7 +97,7 @@ function ProductPage() {
                   className={`flex-shrink-0 w-16 h-16 border-2 overflow-hidden transition-all ${idx === activeIdx ? "border-gold" : "border-border opacity-60 hover:opacity-100"}`}
                   aria-label={`Photo ${idx + 1}`}
                 >
-                  <img src={url} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                  <img src={url} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
