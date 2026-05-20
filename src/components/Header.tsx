@@ -29,32 +29,34 @@ export function Header() {
 
   const iconBtn =
     "inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 hover:text-white transition-colors";
+  const iconBtnMobile =
+    "inline-flex h-8 w-8 items-center justify-center rounded-full text-white/85 hover:text-white transition-colors";
 
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-40 pt-3 sm:pt-5">
         {/* Mobile Navigation (Logo extreme left, actions pill + burger extreme right) */}
-        <div className="container-edit flex sm:hidden items-center justify-between gap-2">
+        <div className="container-edit flex sm:hidden items-center justify-between gap-1 px-3">
           {/* Extreme Left — Logo circle */}
           <Link
             to="/"
             aria-label="Your Fragrance Shop"
-            className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center overflow-hidden shrink-0 p-0`}
+            className={`${islandBase} h-11 w-11 rounded-full inline-flex items-center justify-center overflow-hidden shrink-0 p-0`}
           >
-            <img src={logo} alt="Your Fragrance Shop Logo" className="h-12 w-12 object-cover rounded-full shrink-0" />
+            <img src={logo} alt="Your Fragrance Shop Logo" className="h-11 w-11 object-cover rounded-full shrink-0" />
           </Link>
 
           {/* Extreme Right — Actions Pill followed by Burger Circle */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {/* Actions Pill */}
-            <div className={`${islandBase} h-12 rounded-full px-1.5 flex items-center gap-0 shrink-0`}>
-              <Link to="/catalogue" search={{ focus: true } as any} aria-label="Recherche" className={iconBtn}>
-                <Search className="h-[18px] w-[18px]" />
+            <div className={`${islandBase} h-11 rounded-full px-1 flex items-center gap-0 shrink-0`}>
+              <Link to="/catalogue" search={{ focus: true } as any} aria-label="Recherche" className={iconBtnMobile}>
+                <Search className="h-[17px] w-[17px]" />
               </Link>
-              <Link to={user ? "/favoris" : "/login"} aria-label="Favoris" className={`${iconBtn} relative`}>
-                <Heart className="h-[18px] w-[18px]" />
+              <Link to={user ? "/favoris" : "/login"} aria-label="Favoris" className={`${iconBtnMobile} relative`}>
+                <Heart className="h-[17px] w-[17px]" />
                 {favCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 h-3.5 min-w-[14px] px-0.5 rounded-full bg-gold text-gold-foreground text-[8px] font-semibold flex items-center justify-center">
                     {favCount}
                   </span>
                 )}
@@ -62,20 +64,20 @@ export function Header() {
               <button
                 onClick={toggleTheme}
                 aria-label={isDark ? "Thème clair" : "Thème sombre"}
-                className={iconBtn}
+                className={iconBtnMobile}
               >
-                {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+                {isDark ? <Sun className="h-[17px] w-[17px]" /> : <Moon className="h-[17px] w-[17px]" />}
               </button>
-              <Link to="/panier" aria-label="Panier" className={`${iconBtn} relative`}>
-                <ShoppingBag className="h-[18px] w-[18px]" />
+              <Link to="/panier" aria-label="Panier" className={`${iconBtnMobile} relative`}>
+                <ShoppingBag className="h-[17px] w-[17px]" />
                 {count > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-gold text-gold-foreground text-[10px] font-semibold flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 h-3.5 min-w-[14px] px-0.5 rounded-full bg-gold text-gold-foreground text-[8px] font-semibold flex items-center justify-center">
                     {count}
                   </span>
                 )}
               </Link>
-              <Link to="/login" aria-label="Compte" className={iconBtn}>
-                <User className="h-[18px] w-[18px]" />
+              <Link to="/login" aria-label="Compte" className={iconBtnMobile}>
+                <User className="h-[17px] w-[17px]" />
               </Link>
             </div>
 
@@ -83,7 +85,7 @@ export function Header() {
             <button
               onClick={() => setOpen((v) => !v)}
               aria-label="Menu"
-              className={`${islandBase} h-12 w-12 rounded-full inline-flex items-center justify-center shrink-0`}
+              className={`${islandBase} h-11 w-11 rounded-full inline-flex items-center justify-center shrink-0`}
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
