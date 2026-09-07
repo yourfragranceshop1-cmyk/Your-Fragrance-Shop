@@ -32,6 +32,9 @@ export function Header() {
   const iconBtnMobile =
     "inline-flex h-8 w-8 items-center justify-center rounded-full text-white/85 hover:text-white transition-colors";
 
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-40 pt-3 sm:pt-5">
@@ -112,7 +115,7 @@ export function Header() {
             className={`${islandBase} h-12 sm:w-auto rounded-full inline-flex items-center sm:justify-start overflow-hidden shrink-0 pl-1.5 pr-4 gap-2.5`}
           >
             <img src={logo} alt="Your Fragrance Shop Logo" className="h-9 w-9 object-cover rounded-full shrink-0" />
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap">
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap font-display">
               Your Fragrance Shop
             </span>
           </Link>
@@ -154,8 +157,8 @@ export function Header() {
         </div>
       </header>
 
-      {/* Spacer so content isn't hidden under floating bar */}
-      <div aria-hidden className="h-[72px] sm:h-[88px]" />
+      {/* Spacer so content isn't hidden under floating bar (only on non-home pages) */}
+      {!isHome && <div aria-hidden className="h-[72px] sm:h-[88px]" />}
 
       {/* Slide-down nav drawer */}
       {open && (
@@ -210,8 +213,9 @@ const LABELS: Record<string, string> = {
 
 export function Breadcrumbs() {
   const location = useLocation();
-  const segments = location.pathname.split("/").filter(Boolean);
-  if (segments.length === 0) return null;
+  const rawSegments = location.pathname.split("/").filter(Boolean);
+  const segments = rawSegments.filter((s) => s !== "produit");
+  if (segments.length === 0 || location.pathname === "/") return null;
 
   let acc = "";
   const crumbs = segments.map((seg, i) => {
@@ -222,7 +226,7 @@ export function Breadcrumbs() {
   });
 
   return (
-    <nav aria-label="Fil d'Ariane" className="container-edit pt-2 pb-4">
+    <nav aria-label="Fil d'Ariane" className="container-edit pt-20 sm:pt-24 pb-4">
       <ol className="flex flex-wrap items-center gap-1.5 text-[11px] tracking-[0.18em] uppercase text-muted-foreground">
         <li>
           <Link to="/" className="hover:text-foreground transition-colors">Accueil</Link>

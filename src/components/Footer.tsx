@@ -4,7 +4,7 @@ import { INSTAGRAM_URL, TIKTOK_URL, WHATSAPP_URL } from "@/lib/whatsapp";
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-border bg-secondary/40">
+    <footer className="mt-0 border-t border-border bg-secondary/40">
       <div className="container-edit py-16 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <Logo />
@@ -13,7 +13,7 @@ export function Footer() {
           </p>
         </div>
         <div>
-          <h4 className="text-xs uppercase tracking-[0.2em] mb-4">Boutique</h4>
+          <h4 className="font-display text-sm uppercase tracking-[0.2em] mb-4 text-foreground">Boutique</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/catalogue" className="hover:text-foreground">Tous les parfums</Link></li>
             <li><Link to="/catalogue" search={{ category: "femme" }}  className="hover:text-foreground">Femme</Link></li>
@@ -22,7 +22,7 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="text-xs uppercase tracking-[0.2em] mb-4">Contact</h4>
+          <h4 className="font-display text-sm uppercase tracking-[0.2em] mb-4 text-foreground">Contact</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">WhatsApp</a></li>
             <li><a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="hover:text-foreground">Instagram</a></li>
@@ -32,8 +32,8 @@ export function Footer() {
       </div>
       <div className="border-t border-border">
         <div className="container-edit py-6 text-xs text-muted-foreground flex justify-between">
-          <span>© {new Date().getFullYear()} Your Fragrance Shop</span>
-          <span className="tracking-[0.2em] uppercase">Eau de Parfum</span>
+          <span className="font-display">© {new Date().getFullYear()} Your Fragrance Shop</span>
+          <span className="font-display tracking-[0.2em] uppercase">Eau de Parfum</span>
         </div>
       </div>
     </footer>

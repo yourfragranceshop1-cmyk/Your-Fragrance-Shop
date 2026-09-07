@@ -165,6 +165,13 @@ function TrustMarquee() {
 
   return (
     <section className="bg-secondary/60 py-20 overflow-hidden border-y border-border">
+      <div className="container-edit text-center mb-10">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-2">Engagements & Services</p>
+        <h2 className="font-display text-3xl sm:text-4xl md:text-5xl">Ce que nous proposons</h2>
+        <p className="mt-3 max-w-md mx-auto text-xs sm:text-sm text-muted-foreground tracking-wide leading-relaxed">
+          Une sélection rigoureuse, une commande ultra-rapide via WhatsApp et des prix accessibles à tous.
+        </p>
+      </div>
       <div
         className="select-none cursor-grab active:cursor-grabbing touch-pan-y"
         onPointerDown={onDown}
@@ -187,7 +194,8 @@ function TrustMarquee() {
           ))}
         </div>
       </div>
-    </section>);
+    </section>
+  );
 }
 
 function ParallaxHero() {
@@ -198,9 +206,7 @@ function ParallaxHero() {
     const onScroll = () => {
       if (!ref.current) return;
       const rect = ref.current.getBoundingClientRect();
-      // Only animate while hero is in/near viewport
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-      // Subtle parallax: bg moves slower than scroll
       setOffset(-rect.top * 0.25);
     };
     onScroll();
@@ -211,7 +217,7 @@ function ParallaxHero() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden h-[88vh] min-h-[600px] max-h-[900px] bg-secondary"
+      className="relative overflow-hidden h-screen min-h-[650px] max-h-[1000px] bg-black"
     >
       <div
         className="absolute inset-0 will-change-transform"
@@ -228,25 +234,26 @@ function ParallaxHero() {
           fetchPriority="high"
           className="h-full w-full object-cover"
         />
-        {/* Tinted overlay so text stays legible in light & dark themes */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/50 to-transparent dark:from-background/90 dark:via-background/60" />
+        {/* Crisp dark gradient overlay so hero image is clearly visible without white haze */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent sm:via-black/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
       </div>
 
-      <div className="relative z-10 container-edit h-full flex items-center">
+      <div className="relative z-10 container-edit h-full flex items-center pt-16 sm:pt-20">
         <div className="max-w-xl">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-6">Nouvelle collection</p>
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-foreground">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-6 font-semibold">Nouvelle collection</p>
+          <h1 className="font-display font-black text-5xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-white">
             Luxury &<br />
-            <span className="italic">Fragrance</span>
+            <span className="not-italic">Fragrance</span>
           </h1>
-          <p className="mt-6 max-w-md text-muted-foreground">
+          <p className="mt-6 max-w-md text-white/80 text-sm sm:text-base leading-relaxed">
             De bonnes senteurs pour tous les budgets. Une sélection de fragrances raffinées, livrées rapidement via WhatsApp.
           </p>
           <div className="mt-10 flex items-center gap-6">
-            <Link to="/catalogue" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 text-xs uppercase tracking-[0.2em] hover:bg-primary/90 transition-colors">
+            <Link to="/catalogue" className="inline-flex items-center gap-2 bg-gold text-gold-foreground px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] hover:bg-gold/90 transition-colors shadow-lg">
               Voir les parfums <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/about" className="link-underline text-foreground">Notre histoire</Link>
+            <Link to="/about" className="link-underline text-white hover:text-gold transition-colors">Notre histoire</Link>
           </div>
         </div>
       </div>

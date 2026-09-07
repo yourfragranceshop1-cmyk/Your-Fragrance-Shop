@@ -125,17 +125,17 @@ function CataloguePage() {
                 <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
-              <DropdownMenuItem onClick={() => update({ category: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+            <DropdownMenuContent className="w-48 bg-card/95 border border-border text-card-foreground shadow-2xl backdrop-blur-md rounded-lg p-1">
+              <DropdownMenuItem onClick={() => update({ category: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Tous
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ category: "homme" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ category: "homme" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Homme
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ category: "femme" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ category: "femme" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Femme
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ category: "unisexe" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ category: "unisexe" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Unisexe
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -149,12 +149,12 @@ function CataloguePage() {
                 <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
-              <DropdownMenuItem onClick={() => update({ contenance: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+            <DropdownMenuContent className="w-48 bg-card/95 border border-border text-card-foreground shadow-2xl backdrop-blur-md rounded-lg p-1">
+              <DropdownMenuItem onClick={() => update({ contenance: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Toutes
               </DropdownMenuItem>
               {[5, 25, 30, 35, 50, 75, 100].map((c) => (
-                <DropdownMenuItem key={c} onClick={() => update({ contenance: c })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+                <DropdownMenuItem key={c} onClick={() => update({ contenance: c })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                   {c} ml
                 </DropdownMenuItem>
               ))}
@@ -169,14 +169,14 @@ function CataloguePage() {
                 <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
-              <DropdownMenuItem onClick={() => update({ sort: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+            <DropdownMenuContent className="w-48 bg-card/95 border border-border text-card-foreground shadow-2xl backdrop-blur-md rounded-lg p-1">
+              <DropdownMenuItem onClick={() => update({ sort: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Par défaut
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ sort: "price_asc" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ sort: "price_asc" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Prix croissant
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ sort: "price_desc" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ sort: "price_desc" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Prix décroissant
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -190,17 +190,17 @@ function CataloguePage() {
                 <ChevronDown className="h-3 w-3 opacity-60 shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 bg-black/90 backdrop-blur-md border border-white/10 text-white rounded-lg p-1 shadow-2xl">
-              <DropdownMenuItem onClick={() => update({ type: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+            <DropdownMenuContent className="w-48 bg-card/95 border border-border text-card-foreground shadow-2xl backdrop-blur-md rounded-lg p-1">
+              <DropdownMenuItem onClick={() => update({ type: undefined })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Tous
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ type: "bestseller" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ type: "bestseller" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Bestseller
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ type: "populaire" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ type: "populaire" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Populaire
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => update({ type: "normal" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-white/10 rounded transition-colors px-3 py-2">
+              <DropdownMenuItem onClick={() => update({ type: "normal" })} className="cursor-pointer text-xs uppercase tracking-wider hover:bg-accent hover:text-accent-foreground rounded transition-colors px-3 py-2">
                 Normal
               </DropdownMenuItem>
             </DropdownMenuContent>
