@@ -9,8 +9,8 @@ import type { Product, ProductCategory } from "@/lib/types";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/whatsapp";
 
-// Client-side image compression to reduce payload size and speed up page load
-const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.85): Promise<File> => {
+// Client-side image compression to reduce payload size and speed up page load (WebP @ quality 80%, max 1200px)
+const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.80): Promise<File> => {
   return new Promise((resolve) => {
     if (!file.type.startsWith("image/")) {
       return resolve(file);
@@ -46,18 +46,19 @@ const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 
 
         ctx.drawImage(img, 0, 0, width, height);
 
+        const webpName = file.name.replace(/\.[^.]+$/, "") + ".webp";
         canvas.toBlob(
           (blob) => {
             if (!blob) {
               return resolve(file);
             }
-            const compressedFile = new File([blob], file.name, {
-              type: "image/jpeg",
+            const compressedFile = new File([blob], webpName, {
+              type: "image/webp",
               lastModified: Date.now(),
             });
             resolve(compressedFile);
           },
-          "image/jpeg",
+          "image/webp",
           quality
         );
       };
@@ -300,6 +301,10 @@ function AdminPage() {
                       <img
                         src={url}
                         alt={`Photo ${idx + 1}`}
+                        width={120}
+                        height={120}
+                        loading="lazy"
+                        decoding="async"
                         className={`h-full w-full object-cover border-2 transition-all cursor-pointer ${idx === 0 ? "border-gold" : "border-border hover:border-foreground/40"}`}
                         onClick={() => setPrimary(url)}
                         title={idx === 0 ? "Photo principale" : "Cliquer pour définir comme principale"}
@@ -363,7 +368,17 @@ function AdminPage() {
                 <div key={p.id} className="flex gap-3 bg-card border border-border p-3">
                   {/* Thumbnail grid or single image */}
                   <div className="w-16 h-16 bg-secondary flex-shrink-0 relative overflow-hidden">
-                    {mainUrl && <img src={mainUrl} alt={p.name} className="h-full w-full object-cover" />}
+                    {mainUrl && (
+                      <img
+                        src={mainUrl}
+                        alt={p.name}
+                        width={64}
+                        height={64}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
+                    )}
                     {urls.length > 1 && (
                       <span className="absolute bottom-0 right-0 bg-background/80 text-[9px] px-1">
                         +{urls.length - 1}

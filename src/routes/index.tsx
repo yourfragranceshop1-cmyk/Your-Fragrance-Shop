@@ -232,20 +232,21 @@ function ParallaxHero() {
           height={1080}
           loading="eager"
           fetchPriority="high"
+          decoding="async"
           className="h-full w-full object-cover"
         />
-        {/* Light theme: very light vignette only on left for text legibility */}
-        <div className="absolute inset-0 dark:hidden bg-gradient-to-r from-background/55 via-background/20 to-transparent" />
-        <div className="absolute inset-0 dark:hidden bg-gradient-to-t from-background/30 via-transparent to-transparent" />
-        {/* Dark theme: strong contrast overlay */}
-        <div className="absolute inset-0 hidden dark:block bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
-        <div className="absolute inset-0 hidden dark:block bg-gradient-to-t from-black/70 to-black/30" />
+        {/* Light theme: very light left-side vignette for text legibility */}
+        <div className="absolute inset-0 dark:hidden bg-gradient-to-r from-background/50 via-background/15 to-transparent" />
+        <div className="absolute inset-0 dark:hidden bg-gradient-to-t from-background/25 via-transparent to-transparent" />
+        {/* Dark theme: subtle dark tint — keeps image visible but marks the mode shift */}
+        <div className="absolute inset-0 hidden dark:block bg-black/25" />
+        <div className="absolute inset-0 hidden dark:block bg-gradient-to-r from-black/50 via-black/15 to-transparent" />
       </div>
 
       <div className="relative z-10 container-edit h-full flex items-center pt-16 sm:pt-20">
         <div className="max-w-xl">
           <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-6 font-semibold drop-shadow-sm">Nouvelle collection</p>
-          <h1 className="font-hero font-black text-5xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-foreground dark:text-white drop-shadow-md">
+          <h1 className="font-hero text-5xl sm:text-7xl lg:text-8xl leading-[1.05] tracking-tight text-foreground dark:text-white drop-shadow-md">
             Luxury <span className="text-gold">&amp;</span><br />
             <span>Fragrance</span>
           </h1>

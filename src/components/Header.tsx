@@ -46,7 +46,14 @@ export function Header() {
             aria-label="Your Fragrance Shop"
             className={`${islandBase} h-11 w-11 rounded-full inline-flex items-center justify-center overflow-hidden shrink-0 p-0`}
           >
-            <img src={logo} alt="Your Fragrance Shop Logo" className="h-11 w-11 object-cover rounded-full shrink-0" />
+            <img
+              src={logo}
+              alt="Your Fragrance Shop Logo"
+              width={44}
+              height={44}
+              decoding="async"
+              className="h-11 w-11 object-cover rounded-full shrink-0"
+            />
           </Link>
 
           {/* Extreme Right — Actions Pill followed by Burger Circle */}
@@ -114,7 +121,14 @@ export function Header() {
             aria-label="Your Fragrance Shop"
             className={`${islandBase} h-12 sm:w-auto rounded-full inline-flex items-center sm:justify-start overflow-hidden shrink-0 pl-1.5 pr-4 gap-2.5`}
           >
-            <img src={logo} alt="Your Fragrance Shop Logo" className="h-9 w-9 object-cover rounded-full shrink-0" />
+            <img
+              src={logo}
+              alt="Your Fragrance Shop Logo"
+              width={36}
+              height={36}
+              decoding="async"
+              className="h-9 w-9 object-cover rounded-full shrink-0"
+            />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-white/90 whitespace-nowrap font-display">
               Your Fragrance Shop
             </span>
