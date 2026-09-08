@@ -44,7 +44,7 @@ function ProductPage() {
   const next = () => setActiveIdx((i) => (i + 1) % images.length);
 
   return (
-    <Layout>
+    <Layout breadcrumbLabel={product.name}>
       <section className="container-edit py-12 grid lg:grid-cols-2 gap-12">
         {/* Image gallery */}
         <div className="flex flex-col gap-3">

@@ -211,19 +211,34 @@ const LABELS: Record<string, string> = {
   produit: "Produit",
 };
 
-export function Breadcrumbs() {
+export function Breadcrumbs({ lastLabel }: { lastLabel?: string }) {
   const location = useLocation();
-  const rawSegments = location.pathname.split("/").filter(Boolean);
-  const segments = rawSegments.filter((s) => s !== "produit");
-  if (segments.length === 0 || location.pathname === "/") return null;
+  const path = location.pathname;
+  if (path === "/") return null;
 
-  let acc = "";
-  const crumbs = segments.map((seg, i) => {
-    acc += "/" + seg;
-    const isLast = i === segments.length - 1;
-    const label = LABELS[seg] ?? decodeURIComponent(seg);
-    return { to: acc, label, isLast };
-  });
+  const isProductPage = path.startsWith("/produit/");
+  const rawSegments = path.split("/").filter(Boolean);
+
+  let crumbs: Array<{ to: string; label: string; isLast: boolean }> = [];
+
+  if (isProductPage) {
+    const productSlug = rawSegments[1] ?? "";
+    crumbs = [
+      { to: "/catalogue", label: "Catalogue", isLast: false },
+      { to: path, label: lastLabel ?? decodeURIComponent(productSlug), isLast: true },
+    ];
+  } else {
+    let acc = "";
+    const segments = rawSegments.filter((s) => s !== "produit");
+    crumbs = segments.map((seg, i) => {
+      acc += "/" + seg;
+      const isLast = i === segments.length - 1;
+      const label = lastLabel && isLast ? lastLabel : (LABELS[seg] ?? decodeURIComponent(seg));
+      return { to: acc, label, isLast };
+    });
+  }
+
+  if (crumbs.length === 0) return null;
 
   return (
     <nav aria-label="Fil d'Ariane" className="container-edit pt-20 sm:pt-24 pb-4">
@@ -235,7 +250,7 @@ export function Breadcrumbs() {
           <li key={c.to} className="flex items-center gap-1.5">
             <span aria-hidden className="text-muted-foreground/50">/</span>
             {c.isLast ? (
-              <span className="text-foreground break-all max-w-[150px] sm:max-w-none truncate sm:whitespace-normal inline-block align-bottom" title={c.label}>
+              <span className="text-foreground break-all max-w-[180px] sm:max-w-none truncate sm:whitespace-normal inline-block align-bottom" title={c.label}>
                 {c.label}
               </span>
             ) : (

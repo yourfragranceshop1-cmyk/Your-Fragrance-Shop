@@ -217,7 +217,7 @@ function ParallaxHero() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden h-screen min-h-[650px] max-h-[1000px] bg-black"
+      className="relative overflow-hidden h-screen min-h-[650px] max-h-[1000px] bg-background dark:bg-black transition-colors duration-300"
     >
       <div
         className="absolute inset-0 will-change-transform"
@@ -234,26 +234,29 @@ function ParallaxHero() {
           fetchPriority="high"
           className="h-full w-full object-cover"
         />
-        {/* Crisp dark gradient overlay so hero image is clearly visible without white haze */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent sm:via-black/35" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+        {/* Light theme: very light vignette only on left for text legibility */}
+        <div className="absolute inset-0 dark:hidden bg-gradient-to-r from-background/55 via-background/20 to-transparent" />
+        <div className="absolute inset-0 dark:hidden bg-gradient-to-t from-background/30 via-transparent to-transparent" />
+        {/* Dark theme: strong contrast overlay */}
+        <div className="absolute inset-0 hidden dark:block bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
+        <div className="absolute inset-0 hidden dark:block bg-gradient-to-t from-black/70 to-black/30" />
       </div>
 
       <div className="relative z-10 container-edit h-full flex items-center pt-16 sm:pt-20">
         <div className="max-w-xl">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-6 font-semibold">Nouvelle collection</p>
-          <h1 className="font-display font-black text-5xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-white">
-            Luxury &<br />
-            <span className="not-italic">Fragrance</span>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-gold mb-6 font-semibold drop-shadow-sm">Nouvelle collection</p>
+          <h1 className="font-hero font-black text-5xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-foreground dark:text-white drop-shadow-md">
+            Luxury <span className="text-gold">&amp;</span><br />
+            <span>Fragrance</span>
           </h1>
-          <p className="mt-6 max-w-md text-white/80 text-sm sm:text-base leading-relaxed">
+          <p className="mt-6 max-w-md text-foreground/70 dark:text-white/80 text-sm sm:text-base leading-relaxed drop-shadow-sm">
             De bonnes senteurs pour tous les budgets. Une sélection de fragrances raffinées, livrées rapidement via WhatsApp.
           </p>
           <div className="mt-10 flex items-center gap-6">
-            <Link to="/catalogue" className="inline-flex items-center gap-2 bg-gold text-gold-foreground px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] hover:bg-gold/90 transition-colors shadow-lg">
+            <Link to="/catalogue" className="inline-flex items-center gap-2 bg-primary dark:bg-gold text-primary-foreground dark:text-gold-foreground px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] hover:opacity-90 transition-opacity shadow-lg">
               Voir les parfums <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/about" className="link-underline text-white hover:text-gold transition-colors">Notre histoire</Link>
+            <Link to="/about" className="link-underline text-foreground dark:text-white hover:text-gold transition-colors">Notre histoire</Link>
           </div>
         </div>
       </div>
